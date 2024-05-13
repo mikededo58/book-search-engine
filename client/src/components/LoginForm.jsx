@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Form, Button, Alert } from "react-bootstrap";
 import { useMutation } from "@apollo/client";
-import { LOGIN_USER } from "../utils/mutations";
+import { LOGIN_USER } from "../utils/mutation";
 import Auth from "../utils/auth";
 
 const LoginForm = () => {
@@ -17,27 +17,27 @@ const LoginForm = () => {
   };
 
   const handleFormSubmit = async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
       event.preventDefault();
-      const form = event.currentTarget;
-      if (form.checkValidity() === false) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      console.log(userFormData);
-      try {
-        const { data } = await login({
-          variables: { userFormData },
-        });
-        Auth.login(data.login.token);
-      } catch (err) {
-        console.error(error);
-        setShowAlert(true);
-      }
-      setUserFormData({
-        username: "",
-        email: "",
-        password: "",
+      event.stopPropagation();
+    }
+    console.log(userFormData);
+    try {
+      const { data } = await login({
+        variables: { userFormData },
       });
+      Auth.login(data.login.token);
+    } catch (err) {
+      console.error(error);
+      setShowAlert(true);
+    }
+    setUserFormData({
+      username: "",
+      email: "",
+      password: "",
+    });
   };
 
   return (
