@@ -18,6 +18,11 @@ type User {
     bookCount: Int
 }
 
+type Auth {
+    token: ID!
+    user: User
+  }
+
 type Query {
 user(_id: String): User
 }
