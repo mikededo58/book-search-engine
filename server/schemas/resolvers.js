@@ -33,25 +33,27 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
-    saveBook: async (parent, {userId, bookId}) => {
+    saveBook: async (parent, {newBook}) => {
         if (context.user) {
             throw AuthenticationError;
           }
-          return User.findOneandUpdate(
-            {_id: userId},
-            {$addtoSet: {book: bookId}},
-            {new: true}
+          const updatedBookList = await User.findOneAndUpdate(
+            { _id: context.user._id},
+            { $addToSet: { savedBooks: newBook }},
+            { new: true }
           )
+          return updatedBookList;
     },
-    deleteBook:async (parent, {userId, bookId}) => {
+    deleteBook:async (parent,  {bookId}) => {
         if (context.user) {
             throw AuthenticationError;
           }
-          return User.findOneandUpdate(
-            {_id: userId},
-            {$pull: {book: bookId}},
-            {new: true}
-          )
+          const updatedBookList = await User.findOneAndUpdate(
+            { _id: context.user._id },
+            { $pull: { savedBooks: { bookId }}},
+            { new: true }
+        );
+        return updatedBookList;
     },
 }
 };
