@@ -18,6 +18,16 @@ type User {
     bookCount: Int
 }
 
+input InputBook {
+    bookId: String
+    title: String
+    authors: [String]
+    description: String
+    image: String
+    forSale: String
+    link: String
+  }
+
 type Auth {
     token: ID!
     user: User

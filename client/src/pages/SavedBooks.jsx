@@ -7,38 +7,43 @@ import {
   Col
 } from 'react-bootstrap';
 
-import { deleteBook } from '../utils/API';
 import { GET_ME } from '../utils/query';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 import { useQuery, useMutation } from "@apollo/client";
-import { useParams, Link } from 'react-router-dom';
 import { REMOVE_BOOK, SAVE_BOOK } from '../utils/mutation';
 
-const SavedBooks = () => {
-  let {id} = useParams();
-  const {loading, data} = useQuery(GET_ME, {variables: {_id: id}, });
-  const book = data?.books || [];
-  // const [ saveBook, {error}] = useMutation(SAVE_BOOK);
 
-  // const handleSaveBook = async (newBook) => {
-  //   try{
-  //     await saveBook({variables: {_id, newBook: newBook}});
-  //   }catch(err) { console.error(err)}
-  // }
-const [removeBook, {deleteError}] = useMutation(REMOVE_BOOK)
-  // create function that accepts the book's mongo _id value as param and deletes the book from the database
-  const handleDeleteBook = async (book) => {
-    try {
-      await removeBook({variables: {_id, deleteBook: deleteBook}});
-    }catch(err) {console.error(err)}
+
+const SavedBooks = () => {
+  const {loading, data} = useQuery(GET_ME)
+  const [removeBook, {error}] = useMutation(REMOVE_BOOK)
+
+  const userData = data?.user || [];
+
+  const handleDeleteBook = async (bookId) => {
+    const token = Auth.loggedIn() ? Auth.getToken() : null;
+
+    if (!token) {
+      return false;
+    }
+
+    try { 
+     const { data } = await removeBook ( {variables: {bookId: bookId}});
+
+      // const updatedUser = await response.json();
+      // setUserData(updatedUser);
+      // upon success, remove book's id from localStorage
+      removeBookId(bookId);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // if data isn't here yet, say so
-  if (!userDataLength) {
+  if (loading) {
     return <h2>LOADING...</h2>;
   }
-
   return (
     <>
       <div fluid className="text-light bg-dark p-5">

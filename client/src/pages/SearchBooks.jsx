@@ -14,18 +14,8 @@ const SearchBooks = () => {
   const [searchInput, setSearchInput] = useState("");
 
   const [saveBook, { error }] = useMutation(SAVE_BOOK);
-  let { id } = useParams();
-  const { loading, data } = useQuery(GET_ME, { variables: { _id: id } });
-  const book = data?.books || [];
-
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
-
-  // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
-  // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
-  useEffect(() => {
-    return () => saveBookIds(savedBookIds);
-  });
 
   // create method to search for books and set state on form submit
   const handleFormSubmit = async (event) => {
@@ -36,7 +26,9 @@ const SearchBooks = () => {
     }
 
     try {
-      const response = await searchGoogleBooks(searchInput);
+      const response = await fetch(
+        `https://www.googleapis.com/books/v1/volumes?q=${searchInput}`
+      );
 
       if (!response.ok) {
         throw new Error("something went wrong!");
@@ -60,33 +52,19 @@ const SearchBooks = () => {
   };
 
   const handleSaveBook = async (newBook) => {
+   
+    const token = Auth.loggedIn() ? Auth.getToken() : null;
+
+    if (!token) {
+      return false
+    }
     try {
-      await saveBook({ variables: { _id, newBook: newBook } });
+      await saveBook({ variables: {newBook: newBook } });
     } catch (err) {
       console.error(err);
     }
-  };
-  //   // get token
-  //   const token = Auth.loggedIn() ? Auth.getToken() : null;
-
-  //   if (!token) {
-  //     return false;
-  //   }
-
-  //   try {
-  //     const response = await saveBook(bookToSave, token);
-
-  //     if (!response.ok) {
-  //       throw new Error("something went wrong!");
-  //     }
-
-  //     // if book successfully saves to user's account, save book id to state
-  //     setSavedBookIds([...savedBookIds, bookToSave.bookId]);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
-
+    
+    }
   return (
     <>
       <div className="text-light bg-dark p-5">
@@ -161,5 +139,6 @@ const SearchBooks = () => {
     </>
   );
 };
+
 
 export default SearchBooks;
