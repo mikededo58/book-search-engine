@@ -9,7 +9,7 @@ type Book {
     title: String
 }
 
-Type User {
+type User {
     _id: ID!
     username: String
     email: String 
