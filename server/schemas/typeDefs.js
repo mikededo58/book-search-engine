@@ -18,6 +18,16 @@ Type User {
     bookCount: int
 }
 
+input InputBook {
+    bookId: String
+    title: String
+    authors: [String]
+    description: String
+    image: String
+    forSale: String
+    link: String
+  }
+
 type Query {
 user(_id: String): User
 }
