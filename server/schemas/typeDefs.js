@@ -34,7 +34,7 @@ type Auth {
   }
 
 type Query {
-user(_id: String): User
+getMe(_id: String): User
 }
 
 type Mutation{
