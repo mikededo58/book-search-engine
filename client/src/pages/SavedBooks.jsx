@@ -21,11 +21,11 @@ const SavedBooks = () => {
   const book = data?.books || [];
   const [ saveBook, {error}] = useMutation(SAVE_BOOK);
 
-  const handleSaveBook = async (newBook) => {
-    try{
-      await saveBook({variables: {_id, newBook: newBook}});
-    }catch(err) { console.error(err)}
-  }
+  // const handleSaveBook = async (newBook) => {
+  //   try{
+  //     await saveBook({variables: {_id, newBook: newBook}});
+  //   }catch(err) { console.error(err)}
+  // }
 const [removeBook, {deleteError}] = useMutation(REMOVE_BOOK)
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (book) => {
