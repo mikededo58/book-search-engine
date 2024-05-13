@@ -40,7 +40,7 @@ user(_id: String): User
 type Mutation{
 addUser(username: String!, email: String!, password: String!): Auth
 login(email: String!, password: String!): Auth
-saveBook(userId: ID, bookId: ID!): Book
+saveBook(newBook: InputBook): User
 deleteBook(bookId: String!): User
 }
 `;
